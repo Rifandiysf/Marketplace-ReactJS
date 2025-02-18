@@ -7,7 +7,23 @@ const productTypeInit = {
     message: ""
 }
 
-const fecthProductType = () => async (dispatch) => {
+export const storeProductType = (data) => async (dispatch) => 
+    await fecthApi().post("/product_types", data).then(response => {
+    dispatch({
+        type: "PRODUCT_TYPE_STORE_SUCCESS",
+        payload: {
+            message: response?.data?.message
+        }
+    })
+    dispatch(fecthProductType())
+}).catch(err => dispatch({
+    type: "PRODUCT_TYPE_STORE_FAIL",
+    payload: {
+        error: err?.response
+    }
+}))
+
+export const fecthProductType = () => async (dispatch) => {
     await dispatch({
         type: "PRODUCT_TYPE_INIT"
     })
@@ -24,7 +40,7 @@ const fecthProductType = () => async (dispatch) => {
     }))
 }
 
-const productTypeReducer = (state = productTypeInit, action) => {
+export const productTypeReducer = (state = productTypeInit, action) => {
     switch (action.type) {
         case "PRODUCT_TYPE_INIT":
             return {...state}
@@ -32,12 +48,23 @@ const productTypeReducer = (state = productTypeInit, action) => {
             return {
                 ...state,
                 load: false,
-                data: action?.payload?.data,
+                data: action?.payload?.data
             }
         case "PRODUCT_TYPE_FETCH_FAIL":
             return {
                 ...state,
+                error: action?.payload?.error
+            }
+        case "PRODUCT_TYPE_STORE_SUCCESS":
+            return {
+                ...state,
                 load: false,
+                message: action?.payload?.message,
+                error: null
+            }
+        case "PRODUCT_TYPE_STORE_FAIL":
+            return {
+                ...state,
                 error: action?.payload?.error
             } 
             default:
@@ -45,7 +72,4 @@ const productTypeReducer = (state = productTypeInit, action) => {
     }
 }
 
-export {
-    productTypeReducer,
-    fecthProductType
-}
+export default productTypeReducer

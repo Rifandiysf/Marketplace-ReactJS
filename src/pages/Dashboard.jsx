@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getProfile } from "../redux/userSlice"
-import { fecthProductType } from "../redux/productTypeSlice"
+import { fecthProductType, storeProductType } from "../redux/productTypeSlice"
+import { useForm } from "react-hook-form"
 
 
 const Dashboard = () => {
     const dispatch = useDispatch()
+    const { register, handleSubmit } = useForm()
     const user = useSelector(root => root?.user)
     const productType = useSelector(root => root?.productType)
     const [loading, setLoading] = useState(true)
@@ -27,16 +29,7 @@ const Dashboard = () => {
         return () => clearTimeout(timeout)
     }, [user])
 
-
-
-
-    // useEffect(() => {
-    //     if (loadRedux && loading) return
-    //     if (!loadRedux && !!user) {
-    //         setLoading(false)
-    //     }
-    //     window.location.href = "/login"
-    // }, [loadRedux, loading ,user])
+    const submitProductType = (value) => dispatch(storeProductType(value))
 
     if (loading) return <h1>Loading...</h1>
   return (
@@ -89,12 +82,17 @@ const Dashboard = () => {
                   <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
                   <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModalAddProductType(!showModalAddProductType)}></button>
                 </div>
-                <div className="modal-body">
-                    <input type="text" className="form-control bg-light"/>
-                </div>
+                <form onSubmit={handleSubmit(submitProductType)}>
+                    <div className="modal-body">
+                        <input type="text" className="form-control bg-black" placeholder="Product Type" {...register("type_name")}/>
+                        {productType?.error && <span className="text-danger">
+                            {productType?.error?.data?.message}
+                        </span>}
+                    </div>
+                </form>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setShowModalAddProductType(!showModalAddProductType)}>Close</button>
-                  <button type="button" className="btn btn-primary">Save changes</button>
+                  <button type="submit" className="btn btn-primary">Submit</button>
                 </div>
               </div>
             </div>
