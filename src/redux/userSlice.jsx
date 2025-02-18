@@ -51,6 +51,7 @@ export const loginSubmit = (data) => {
                 type: "LOGIN_SUCCESS",
                 message: Response.data.message
             })
+            window.location.href = '/dashboard'
         })
         .catch(err => dispatch({
             type: "LOGIN_FAIL",

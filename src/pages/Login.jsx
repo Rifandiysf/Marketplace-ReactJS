@@ -12,6 +12,10 @@ const Login = () => {
     const onSubmit = (value) => dispacth(loginSubmit(value))
     const loginState = useSelector(root => root.user)
 
+    useEffect(() => {
+        localStorage.getItem("token") !== null ? window.location.href = '/dashboard' : null
+    }, [])
+
         useEffect(() => {
             if(loginState?.message !== "") {
                 Swal.fire({

@@ -12,6 +12,10 @@ const Register = () => {
     const registerState = useSelector((data) => data?.user)
 
     useEffect(() => {
+        localStorage.getItem("token") !== null ? window.location.href = '/dashboard' : null
+    }, [])
+
+    useEffect(() => {
         if(registerState?.message !== "") {
             Swal.fire({
                 position: "bottom-end",
