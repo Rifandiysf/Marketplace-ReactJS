@@ -3,10 +3,27 @@ import { fecthApi } from "../utils"
 
 const init = {
     load: true,
-    data: [],
+    data: null,
     message: "",
     err: null
 }
+
+export const getProfile = (token) => (dispatch) => (fecthApi().get("user",{
+    headers: {
+        "Accept": "Appliction/json",
+        "Authorization": `Bearer ${token}`
+    }
+}).then(response => dispatch({
+    type: "AUTH_SUCCESS",
+    payload: {
+        data: response?.data
+    }
+})).catch(err => dispatch({
+    type: "AUTH_FAIL",
+    payload: {
+        error: err?.response
+    }
+})))
 
 export const registerSubmit = (data) => {
     return (dispatch) => {
@@ -49,13 +66,16 @@ const userReducer = (state = init, action) => {
         case "AUTH_INIT":
             return state
         case "AUTH_SUCCESS":
-                return {
-                    ...state,
-                    err: action?.payload?.data
-                }
+            return {
+                ...state,
+                load: false,
+                data: action?.payload?.data
+            }
         case "AUTH_FAIL":
             return {
                 ...state,
+                load: false,
+                data: false,
                 err: action?.payload?.error
             }
         case "LOGIN_FAIL":
